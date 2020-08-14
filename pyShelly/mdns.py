@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=broad-except, bare-except, invalid-name
-
 import re
 import ipaddress
-from zeroconf import ( ServiceBrowser, Zeroconf )
 
-MATCH_NAME = \
-    re.compile("(?P<devtype>shelly.+)-(?P<id>[0-9A-F]+)._http._tcp.local.")
+from zeroconf import ServiceBrowser, Zeroconf
 
-EXCLUDE = ['shellydw', 'shellyht', 'shellyflood']
+MATCH_NAME = re.compile(
+    "(?P<devtype>shelly.+)-(?P<id>[0-9A-F]+)._http._tcp.local."
+)
+
+EXCLUDE = ('shellydw', 'shellyht', 'shellyflood')
+
 
 class MDns:
 
@@ -30,17 +32,21 @@ class MDns:
         """ Update a service in the collection. """
         self.add_service(zconf, type, name)
 
-    def __init__(self, root):
+    def __init__(self, root, zeroconf_instance=None):
         self._root = root
-        self._zeroconf = None
         self._browser = None
+        self._with_initial_zeroconf = zeroconf_instance is not None
+        self._zeroconf = zeroconf_instance
 
     def start(self):
-        self._zeroconf = zeroconf = Zeroconf()
-        self._browser = \
-            ServiceBrowser(zeroconf, "_http._tcp.local.", self)
+        if self._zeroconf is None:
+            self._zeroconf = Zeroconf()
+
+        self._browser = ServiceBrowser(
+            self._zeroconf, "_http._tcp.local.", self
+        )
 
     def close(self):
-        if self._zeroconf:
+        if self._zeroconf and not self._with_initial_zeroconf:
             self._zeroconf.close()
             self._zeroconf = None

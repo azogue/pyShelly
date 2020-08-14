@@ -66,8 +66,9 @@ try:
 except:
     import httplib
 
+
 class pyShelly():
-    def __init__(self, loop=None):
+    def __init__(self, loop=None, zeroconf_instance=None):
         LOGGER.info("Init  %s", VERSION)
         self.stopped = threading.Event()
         self.blocks = {}
@@ -94,6 +95,7 @@ class pyShelly():
 
         self._coap = CoAP(self)
         self._mdns = None
+        self._zeroconf_instance = zeroconf_instance
         self._mqtt = MQTT(self)
         self._firmware_mgr =  firmware_manager(self)
         self.host_ip = ''
@@ -122,7 +124,7 @@ class pyShelly():
 
     def start(self):
         if self.mdns_enabled:
-            self._mdns = MDns(self)
+            self._mdns = MDns(self, zeroconf_instance=self._zeroconf_instance)
         if self.cloud_auth_key and self.cloud_server:
             self.cloud = Cloud(self, self.cloud_server, self.cloud_auth_key)
             self.cloud.start()
