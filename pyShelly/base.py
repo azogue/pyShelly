@@ -25,7 +25,7 @@ class Base(object):
             if not type(fmt_list) is list:
                 fmt_list = [fmt_list]
             for fmt in fmt_list:
-                print(fmt)
+                # print(fmt)
                 params = fmt.split(':')
                 cmd = params[0]
                 if cmd == 'bool':
@@ -42,7 +42,7 @@ class Base(object):
                     value = value / div
                 elif cmd == "ver":
                     value = self.parent._firmware_mgr.format(value)
-                print(value)
+                # print(value)
         return value
 
     def _update_info_value(self, name, status, cfg):
@@ -67,7 +67,7 @@ class Base(object):
         if self._info_value_cfg:
             need_update = False
             #print("**********************************")
-            print(payload)
+            # print(payload)
             for name, cfg in self._info_value_cfg.items():
                 #print(name)
                 #print(cfg)
