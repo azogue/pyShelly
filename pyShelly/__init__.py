@@ -17,7 +17,7 @@ from .utils import exception_log, timer
 from .coap import CoAP
 from .mqtt import MQTT
 from .mdns import MDns
-from .firmware import firmware_manager
+from .firmware import FirmwareManager
 
 #from .device.relay import Relay
 #from .device.switch import Switch
@@ -97,7 +97,7 @@ class pyShelly():
         self._mdns = None
         self._zeroconf_instance = zeroconf_instance
         self._mqtt = MQTT(self)
-        self._firmware_mgr =  firmware_manager(self)
+        self._firmware_mgr = FirmwareManager.instance()  # it is a Singleton
         self.host_ip = ''
         self.bind_ip = ''
         self.mqtt_port = 0
